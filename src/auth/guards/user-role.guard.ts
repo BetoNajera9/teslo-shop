@@ -13,7 +13,7 @@ import { User } from '../entities';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) { }
+  constructor(private readonly reflector: Reflector) {}
 
   canActivate(
     ctx: ExecutionContext,

@@ -26,7 +26,7 @@ export class ProductsService {
     private readonly productImageRepository: Repository<ProductImage>,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(createProductDto: CreateProductDto, user: User) {
     try {
@@ -37,7 +37,7 @@ export class ProductsService {
         images: images.map((image) =>
           this.productImageRepository.create({ url: image }),
         ),
-        user
+        user,
       });
 
       await this.productRepository.save(product);
@@ -122,17 +122,17 @@ export class ProductsService {
         //
       }
 
-      product.user = user
-      await queryRunner.manager.save(product)
+      product.user = user;
+      await queryRunner.manager.save(product);
       // await this.productRepository.save(product);
 
-      await queryRunner.commitTransaction()
-      await queryRunner.release()
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
 
       return this.findOnePlain(id);
     } catch (error) {
-      await queryRunner.rollbackTransaction()
-      await queryRunner.release()
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
 
       this.handlerError(error);
     }
@@ -154,15 +154,12 @@ export class ProductsService {
   }
 
   async deleteAllProducts() {
-    const query = this.productRepository.createQueryBuilder('product')
+    const query = this.productRepository.createQueryBuilder('product');
 
     try {
-      return await query
-        .delete()
-        .where({})
-        .execute()
+      return await query.delete().where({}).execute();
     } catch (error) {
-      this.handlerError(error)
+      this.handlerError(error);
     }
   }
 }

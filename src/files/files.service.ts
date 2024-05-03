@@ -6,16 +6,16 @@ import { join } from 'path';
 export class FilesService {
   create(file: Express.Multer.File) {
     return {
-      fileName: file.originalname
-    }
+      fileName: file.originalname,
+    };
   }
 
   getStaticProductImage(imageName: string) {
-    const path = join(__dirname, '../../static/products', imageName)
+    const path = join(__dirname, '../../static/products', imageName);
 
     if (!existsSync)
-      throw new BadRequestException(`Not product foun with image ${imageName}`)
+      throw new BadRequestException(`Not product foun with image ${imageName}`);
 
-    return path
+    return path;
   }
 }

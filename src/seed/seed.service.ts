@@ -6,57 +6,55 @@ import { ProductsService } from 'src/products/products.service';
 import { initialData } from './data/seed.data';
 import { User } from 'src/auth/entities';
 
-
 @Injectable()
 export class SeedService {
   constructor(
     private readonly productService: ProductsService,
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
-  ) { }
+    private readonly userRepository: Repository<User>,
+  ) {}
 
   async runSeed() {
-    await this.deleteTables()
+    await this.deleteTables();
 
-    const adminUser = await this.insertUsers()
+    const adminUser = await this.insertUsers();
 
-    await this.insertNewProduct(adminUser)
+    await this.insertNewProduct(adminUser);
 
-    return 'SEED EXECUTE'
+    return 'SEED EXECUTE';
   }
 
   private async deleteTables() {
-    await this.productService.deleteAllProducts()
+    await this.productService.deleteAllProducts();
 
-    const queryBuilder = this.userRepository.createQueryBuilder()
-    await queryBuilder
-      .delete()
-      .where({})
-      .execute()
+    const queryBuilder = this.userRepository.createQueryBuilder();
+    await queryBuilder.delete().where({}).execute();
   }
 
   private async insertUsers() {
-    const seedUsers = initialData.users
+    const seedUsers = initialData.users;
 
-    const users: User[] = []
+    const users: User[] = [];
 
-    seedUsers.forEach(user => {
-      users.push(this.userRepository.create(user))
-    })
+    seedUsers.forEach((user) => {
+      users.push(this.userRepository.create(user));
+    });
 
-    const dbUsers = await this.userRepository.save(seedUsers)
+    const dbUsers = await this.userRepository.save(seedUsers);
 
-    return dbUsers[0]
+    return dbUsers[0];
   }
 
   private async insertNewProduct(admin: User) {
-    await this.productService.deleteAllProducts()
+    await this.productService.deleteAllProducts();
 
-    const products = initialData.products
+    const products = initialData.products;
 
-    const insertPromise = products.map((product) => this.productService.create(product, admin))
-    await Promise.all(insertPromise)
+    const insertPromise = products.map((product) =>
+      this.productService.create(product, admin),
+    );
+    await Promise.all(insertPromise);
 
-    return true
+    return true;
   }
 }

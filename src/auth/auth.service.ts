@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import * as Bcrypt from 'bcrypt'
+import * as Bcrypt from 'bcrypt';
 import {
   InternalServerErrorException,
   UnauthorizedException,
@@ -21,60 +21,59 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async register(createUserDto: CreateUserDto) {
     try {
-      const { password, ...userData } = createUserDto
+      const { password, ...userData } = createUserDto;
 
       const user = this.userRepository.create({
         ...userData,
-        password: Bcrypt.hashSync(password, 10)
+        password: Bcrypt.hashSync(password, 10),
       });
 
       await this.userRepository.save(user);
 
-      delete user.password
+      delete user.password;
 
       return {
         ...user,
-        token: this.getToken({ id: user.id })
-      }
+        token: this.getToken({ id: user.id }),
+      };
     } catch (error) {
       this.handlerError(error);
     }
   }
 
   async login(loginUserDto: LoginUserDto) {
-    const { password, email } = loginUserDto
+    const { password, email } = loginUserDto;
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { id: true, password: true, email: true }
-    })
+      select: { id: true, password: true, email: true },
+    });
 
-    if (!user)
-      throw new UnauthorizedException('Credential not valid')
+    if (!user) throw new UnauthorizedException('Credential not valid');
 
     if (!Bcrypt.compareSync(password, user.password))
-      throw new UnauthorizedException('Credential not valid')
+      throw new UnauthorizedException('Credential not valid');
 
     return {
       ...user,
-      token: this.getToken({ id: user.id })
-    }
+      token: this.getToken({ id: user.id }),
+    };
   }
 
   private getToken(payload: PayloadInterface) {
-    return this.jwtService.sign(payload)
+    return this.jwtService.sign(payload);
   }
 
   async checkAuthStatus(user: User) {
     return {
       ...user,
-      token: this.getToken({ id: user.id })
-    }
+      token: this.getToken({ id: user.id }),
+    };
   }
 
   private handlerError(error: any): never {
