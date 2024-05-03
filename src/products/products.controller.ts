@@ -1,3 +1,4 @@
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   ParseUUIDPipe,
   Controller,
@@ -16,17 +17,29 @@ import { Auth, GetUser } from 'src/auth/decorators';
 import { ValidRolesEnum } from 'src/auth/enums';
 import { PaginationDto } from 'src/common/dto';
 import { User } from 'src/auth/entities';
+import { Product } from './entities';
 
+@ApiTags('Products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   @Auth(ValidRolesEnum.admin)
-  create(
-    @Body() createProductDto: CreateProductDto,
-    @GetUser() user: User
-  ) {
+  @ApiResponse({
+    status: 201,
+    description: 'Product was created',
+    type: Product,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbbide Token releated',
+  })
+  create(@Body() createProductDto: CreateProductDto, @GetUser() user: User) {
     return this.productsService.create(createProductDto, user);
   }
 
@@ -39,7 +52,7 @@ export class ProductsController {
   @Get(':term')
   @Auth(ValidRolesEnum.user)
   findOne(@Param('term') term: string) {
-    return this.productsService.findOnePlain(term)
+    return this.productsService.findOnePlain(term);
   }
 
   @Patch(':id')
@@ -47,7 +60,7 @@ export class ProductsController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
-    @GetUser() user: User
+    @GetUser() user: User,
   ) {
     return this.productsService.update(id, updateProductDto, user);
   }

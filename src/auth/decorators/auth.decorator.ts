@@ -8,6 +8,6 @@ import { UserRoleGuard } from '../guards';
 export function Auth(...roles: ValidRolesEnum[]) {
   return applyDecorators(
     RoleProtected(...roles),
-    UseGuards(AuthGuard(), UserRoleGuard)
+    UseGuards(AuthGuard(), UserRoleGuard),
   );
 }

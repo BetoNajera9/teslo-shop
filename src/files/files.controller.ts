@@ -1,5 +1,6 @@
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
 import {
@@ -16,12 +17,13 @@ import {
 import { fileFilter, fileNamer } from './helpers';
 import { FilesService } from './files.service';
 
+@ApiTags('Files')
 @Controller('files')
 export class FilesController {
   constructor(
     private readonly filesService: FilesService,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
   @Get('product/:imageName')
   findImage(@Res() res: Response, @Param('imageName') imageName: string) {

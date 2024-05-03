@@ -23,9 +23,9 @@ import { User } from './entities';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET'),
         signOptions: {
-          expiresIn: '2h'
-        }
-      })
+          expiresIn: '2h',
+        },
+      }),
     }),
 
     // JwtModule.register({
@@ -37,6 +37,6 @@ import { User } from './entities';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule]
+  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
-export class AuthModule { }
+export class AuthModule {}

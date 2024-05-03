@@ -9,4 +9,4 @@ import { AuthModule } from 'src/auth/auth.module';
   controllers: [SeedController],
   providers: [SeedService],
 })
-export class SeedModule { }
+export class SeedModule {}
